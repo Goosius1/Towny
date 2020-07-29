@@ -71,9 +71,9 @@ public class SiegeWarDistanceUtil {
 	 * This method finds the nearest siege to the given block, 
 	 *
 	 * @param block the given block
-	 * @return a SiegeZoneDistance object containing both the siege and distance. Null if not found.
+	 * @return a Siege object describing the nearest siege to the given block. Null if not found.
 	 */
-	public static SiegeDistance findNearestSiegeDistance(Block block) {
+	public static Siege findNearestSiege(Block block) {
 		//Find the nearest siege zone to the given block
 		Siege nearestSiege = null;
 		double distanceToNearestSiegeZone = -1;
@@ -95,9 +95,20 @@ public class SiegeWarDistanceUtil {
 			}
 		}
 	
+		return nearestSiege;
+	}
+	
+	/**
+	 *This method finds the distance of the siege nearest to the given block.
+	 @param block the given block.
+	 @return a SiegeDistance object, containing parameters for a siege and a distance. Null if not found.
+	*/
+	public static SiegeDistance findNearestSiegeDistance(Block block) {
+		Siege nearestSiege = findNearestSiege(block);
 		if(nearestSiege == null) {
 			return null;
 		} else {
+			double distanceToNearestSiegeZone = block.getLocation().distance(nearestSiege.getFlagLocation());
 			return new SiegeDistance(nearestSiege, distanceToNearestSiegeZone);
 		}
 	}

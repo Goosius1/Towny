@@ -9,10 +9,12 @@ import com.palmergames.bukkit.towny.object.TownyWorld;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Nation;
+import com.palmergames.bukkit.towny.war.siegewar.objects.Siege;
 import com.palmergames.bukkit.towny.war.siegewar.objects.SiegeDistance;
 import com.palmergames.bukkit.towny.war.siegewar.playeractions.*;
 import com.palmergames.bukkit.towny.war.siegewar.utils.SiegeWarBlockUtil;
 import com.palmergames.bukkit.towny.war.siegewar.utils.SiegeWarDistanceUtil;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
@@ -94,6 +96,26 @@ public class SiegeWarPlaceBlockController {
 							return true;
 						}
 						break; //A forbidden material was found, but other conditions were not met.
+					}
+				}
+			}
+			
+			//Active zone: if enabled, prohibit building above the banner control zone.
+			if(TownySettings.isWarSiegeActiveZoneEnabled() && !TownyUniverse.getInstance().getDataSource().getWorld(block.getWorld().getName()).hasTownBlock(Coord.parseCoord(block))) {
+				Siege nearestSiege = SiegeWarDistanceUtil.findNearestSiege(block);
+				Location delta = block.getLocation().subtract(nearestSiege.getFlagLocation());
+				if((delta.getY() + 1) > TownySettings.getBannerControlVerticalDistanceBlocks()) {
+					//Above the maximum allowable height above the banner's resting block
+					double distanceToNearestSiegeBannerHorizontal = Math.sqrt(Math.pow(delta.getX(),2) + Math.pow(delta.getZ(),2));
+					if(distanceToNearestSiegeBannerHorizontal <= TownySettings.getBannerControlHorizontalDistanceBlocks()) {
+						//Within the prohibited radius
+						event.setCancelled(true);
+						event.setBuild(false);
+						TownyMessaging.sendErrorMsg(player, String.format(
+							TownySettings.getLangString("msg_war_siege_active_zone_build_forbidden"),
+							TownySettings.getBannerControlHorizontalDistanceBlocks(),
+							TownySettings.getBannerControlVerticalDistanceBlocks()));
+						return true;
 					}
 				}
 			}
@@ -352,4 +374,3 @@ public class SiegeWarPlaceBlockController {
 
 	}
 }
-

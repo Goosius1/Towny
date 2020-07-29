@@ -1332,5 +1332,9 @@ msg_war_siege_battle_session_ended: '&6[War]&2 Battle session ended. The next ti
 msg_war_siege_zone_block_placement_forbidden: '&6[War]&c You cannot place this type of block in the wilderness area of a siege zone.'
 msg_war_siege_zone_bucket_emptying_forbidden: '&6[War]&c You cannot use this type of bucket in the wilderness area of a siege zone.'
 
+#Active zone
+msg_war_siege_active_zone_build_forbidden: '&6[War]&c You cannot build within %d blocks horizontally of the banner and more than %d blocks above it.'
+msg_war_siege_active_zone_destroy_forbidden: '&6[War]&c You cannot destroy within %d blocks horizontally of the banner and more than %d blocks below it.'
+
 #Nation Refund
 nation_help_11 : 'Claim all your nation refunds.'

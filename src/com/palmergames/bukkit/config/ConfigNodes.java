@@ -2008,6 +2008,13 @@ public enum ConfigNodes {
 			"# If this setting is true, and a player from the banner controlling side dies,",
 			"# then the death points are increased by a certain percentage. (see points section below)",
 			"# This setting gives smaller and weaker towns/nations a better chance, as they will tend to be the counter-attackers."),
+	WAR_SIEGE_ACTIVE_ZONE_ENABLED(
+			"war.siege.switches.active_zone_enabled",
+			"true",
+			"# If this setting is enabled, players will be unable to build above the banner control zone and unable to destroy below the banner control zone.",
+			"# This is useful for prhibiting players from building skybases above the banner for the sole purpose of cancelling enemy banner control sessions,",
+			"# and for preventing players from digging a very deep hole/trench/trap beneath the banner.",
+			"# This setting is particularly useful for lessening the burden on staff to ensure fair play in sieges."),
 
 	//Monetary Values
 	WAR_SIEGE_ATTACKER_COST_UPFRONT_PER_PLOT(

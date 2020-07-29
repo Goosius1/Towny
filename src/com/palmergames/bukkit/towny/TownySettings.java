@@ -3341,7 +3341,7 @@ public class TownySettings {
 		}
 		return battleSessionsForbiddenBucketMaterials;
 	}
-
+	
 	public static int getWarSiegePeacefulTownsGuardianTownPlotsRequirement() {
 		return getInt(ConfigNodes.WAR_SIEGE_PEACEFUL_TOWNS_GUARDIAN_TOWN_PLOTS_REQUIREMENT);
 	}
@@ -3376,6 +3376,10 @@ public class TownySettings {
 
 	public static int getBannerControlVerticalDistanceBlocks() {
 		return getInt(ConfigNodes.WAR_SIEGE_BANNER_CONTROL_VERTICAL_DISTANCE_BLOCKS);
+	}
+
+	public static boolean isWarSiegeActiveZoneEnabled() {
+		return getBoolean(ConfigNodes.WAR_SIEGE_ACTIVE_ZONE_ENABLED);
 	}
 
 }
