@@ -3,6 +3,7 @@ package com.palmergames.bukkit.towny.war.siegewar.playeractions;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.event.SiegeWarSiegeEndEvent;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -12,6 +13,7 @@ import com.palmergames.bukkit.towny.war.siegewar.utils.SiegeWarSiegeCompletionUt
 import com.palmergames.bukkit.towny.war.siegewar.enums.SiegeStatus;
 import com.palmergames.bukkit.towny.war.siegewar.objects.Siege;
 import com.palmergames.util.TimeMgmt;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 
@@ -66,6 +68,9 @@ public class SurrenderTown {
 		long timeUntilSurrenderConfirmation = siege.getTimeUntilSurrenderConfirmationMillis();
 
 		if(timeUntilSurrenderConfirmation > 0) {
+			SiegeWarSiegeEndEvent siegeEndEvent = new SiegeWarSiegeEndEvent(siege.getAttackingNation(), siege.getDefendingTown(),
+				SiegeStatus.PENDING_DEFENDER_SURRENDER);
+			Bukkit.getPluginManager().callEvent(siegeEndEvent);
 			//Pending surrender
 			siege.setStatus(SiegeStatus.PENDING_DEFENDER_SURRENDER);
 			TownyUniverse.getInstance().getDataSource().saveSiege(siege);
@@ -75,6 +80,9 @@ public class SurrenderTown {
 				siege.getAttackingNation().getFormattedName(),
 				TimeMgmt.getFormattedTimeValue(timeUntilSurrenderConfirmation)));
 		} else {
+			SiegeWarSiegeEndEvent siegeEndEvent = new SiegeWarSiegeEndEvent(siege.getAttackingNation(), siege.getDefendingTown(),
+				SiegeStatus.DEFENDER_SURRENDER);
+			Bukkit.getPluginManager().callEvent(siegeEndEvent);
 			//Immediate surrender
 			SiegeWarMoneyUtil.giveWarChestToAttackingNation(siege);
 			SiegeWarSiegeCompletionUtil.updateSiegeValuesToComplete(siege, SiegeStatus.DEFENDER_SURRENDER);

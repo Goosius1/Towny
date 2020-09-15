@@ -3,6 +3,7 @@ package com.palmergames.bukkit.towny.war.siegewar.playeractions;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.event.SiegeWarSiegeEndEvent;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -12,6 +13,7 @@ import com.palmergames.bukkit.towny.war.siegewar.utils.SiegeWarMoneyUtil;
 import com.palmergames.bukkit.towny.war.siegewar.enums.SiegeStatus;
 import com.palmergames.bukkit.towny.war.siegewar.utils.SiegeWarSiegeCompletionUtil;
 import com.palmergames.util.TimeMgmt;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 
@@ -69,6 +71,11 @@ public class AbandonAttack {
 		long timeUntilOfficialAbandon = siege.getTimeUntilAbandonConfirmationMillis();
 
 		if(timeUntilOfficialAbandon > 0) {
+
+			SiegeWarSiegeEndEvent siegeEndEvent = new SiegeWarSiegeEndEvent(siege.getAttackingNation(), siege.getDefendingTown(), 
+				SiegeStatus.PENDING_ATTACKER_ABANDON);
+			Bukkit.getPluginManager().callEvent(siegeEndEvent);
+			
 			//Pending abandon
 			siege.setStatus(SiegeStatus.PENDING_ATTACKER_ABANDON);
 			TownyUniverse.getInstance().getDataSource().saveSiege(siege);
@@ -78,6 +85,9 @@ public class AbandonAttack {
 					siege.getDefendingTown().getFormattedName(),
 					TimeMgmt.getFormattedTimeValue(timeUntilOfficialAbandon)));
 		} else {
+			SiegeWarSiegeEndEvent siegeEndEvent = new SiegeWarSiegeEndEvent(siege.getAttackingNation(), siege.getDefendingTown(),
+				SiegeStatus.ATTACKER_ABANDON);
+			Bukkit.getPluginManager().callEvent(siegeEndEvent);
 			//Immediate abandon
 			SiegeWarMoneyUtil.giveWarChestToDefendingTown(siege);
 			SiegeWarSiegeCompletionUtil.updateSiegeValuesToComplete(siege, SiegeStatus.ATTACKER_ABANDON);

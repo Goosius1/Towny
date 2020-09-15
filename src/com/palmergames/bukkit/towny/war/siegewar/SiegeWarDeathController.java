@@ -2,6 +2,7 @@ package com.palmergames.bukkit.towny.war.siegewar;
 
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.event.SiegeWarPlayerDeathRewardSiegePointsEvent;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.permissions.PermissionNodes;
@@ -9,6 +10,7 @@ import com.palmergames.bukkit.towny.war.siegewar.enums.SiegeSide;
 import com.palmergames.bukkit.towny.war.siegewar.objects.Siege;
 import com.palmergames.bukkit.towny.war.siegewar.utils.SiegeWarDistanceUtil;
 import com.palmergames.bukkit.towny.war.siegewar.utils.SiegeWarPointsUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
@@ -117,6 +119,9 @@ public class SiegeWarDeathController {
 			if(confirmedCandidateSiege != null) {
 
 				if(confirmedCandidateSiegePlayerSide == SiegeSide.DEFENDERS) {
+					SiegeWarPlayerDeathRewardSiegePointsEvent deathRewardSiegePointsEvent = new SiegeWarPlayerDeathRewardSiegePointsEvent(deadPlayer, 
+						SiegeSide.DEFENDERS);
+					Bukkit.getPluginManager().callEvent(deathRewardSiegePointsEvent);
 					SiegeWarPointsUtil.awardPenaltyPoints(
 						false,
 						deadPlayer,
@@ -125,6 +130,9 @@ public class SiegeWarDeathController {
 						TownySettings.getLangString("msg_siege_war_defender_death"));
 
 				} else {
+					SiegeWarPlayerDeathRewardSiegePointsEvent deathRewardSiegePointsEvent = new SiegeWarPlayerDeathRewardSiegePointsEvent(deadPlayer,
+						SiegeSide.ATTACKERS);
+					Bukkit.getPluginManager().callEvent(deathRewardSiegePointsEvent);
 					SiegeWarPointsUtil.awardPenaltyPoints(
 						true,
 						deadPlayer,

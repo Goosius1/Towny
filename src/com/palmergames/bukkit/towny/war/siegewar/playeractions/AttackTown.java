@@ -2,6 +2,8 @@ package com.palmergames.bukkit.towny.war.siegewar.playeractions;
 
 import com.palmergames.bukkit.towny.*;
 import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.event.SiegeWarPreSiegeStartEvent;
+import com.palmergames.bukkit.towny.event.SiegeWarSiegeStartEvent;
 import com.palmergames.bukkit.towny.exceptions.EconomyException;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.*;
@@ -10,6 +12,7 @@ import com.palmergames.bukkit.towny.war.siegewar.enums.SiegeStatus;
 import com.palmergames.bukkit.towny.war.siegewar.objects.Siege;
 import com.palmergames.bukkit.towny.war.siegewar.utils.SiegeWarDistanceUtil;
 import com.palmergames.util.TimeMgmt;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -104,7 +107,16 @@ public class AttackTown {
 			}
 
             //Setup attack
+
+			SiegeWarPreSiegeStartEvent preSiegeStartEvent = new SiegeWarPreSiegeStartEvent(player, nationOfAttackingPlayer, defendingTown);
+			Bukkit.getPluginManager().callEvent(preSiegeStartEvent);
+			if (preSiegeStartEvent.isCancelled()) {
+				return;
+			}
             attackTown(block, nationOfAttackingPlayer, defendingTown);
+			SiegeWarSiegeStartEvent siegeStartEvent = new SiegeWarSiegeStartEvent(nationOfAttackingPlayer, defendingTown);
+			Bukkit.getPluginManager().callEvent(siegeStartEvent);
+			
         } catch (TownyException x) {
             TownyMessaging.sendErrorMsg(player, x.getMessage());
 			event.setBuild(false);
