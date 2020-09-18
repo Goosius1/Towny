@@ -62,7 +62,7 @@ public class DailyTimerTask extends TownyTimerTask {
 				collectTownCosts();
 				TownyMessaging.sendDebugMsg("Collecting Nation Costs");
 				collectNationCosts();
-				Bukkit.getServer().getPluginManager().callEvent(new NewDayEvent(newlyBankruptTowns, removedNations, totalTownUpkeep, totalNationUpkeep, start));
+				
 				
 			} catch (EconomyException ignored) {
 				System.out.println("Economy Exception");
@@ -121,17 +121,6 @@ public class DailyTimerTask extends TownyTimerTask {
 			}			
 		}
 		
-		// Reduce conquered towns' conqueredDays
-		for (Town towns : TownyUniverse.getInstance().getDataSource().getTowns()) {
-			if (towns.isConquered()) {
-				if (towns.getConqueredDays() == 1) {
-					towns.setConquered(false);
-					towns.setConqueredDays(0);
-				} else
-					towns.setConqueredDays(towns.getConqueredDays() - 1);				
-			}
-		}
-
 		//Update town peacefulness counters
 		if (TownySettings.getWarCommonPeacefulTownsEnabled()) {
 			TownPeacefulnessUtil.updateTownPeacefulnessCounters();
@@ -139,6 +128,24 @@ public class DailyTimerTask extends TownyTimerTask {
 				TownPeacefulnessUtil.evaluatePeacefulTownNationAssignments();
 			}
 		}
+
+		// Reduce conquered towns' conqueredDays and checks for peaceful towns
+		List<Town> peacefulTowns = new ArrayList<>();
+		for (Town towns : TownyUniverse.getInstance().getDataSource().getTowns()) {
+			if (towns.isConquered()) {
+				if (towns.getConqueredDays() == 1) {
+					towns.setConquered(false);
+					towns.setConqueredDays(0);
+				} else
+			}
+		}
+		//Update town peacefulness counters
+			if (towns.isPeaceful()) {
+				peacefulTowns.add(towns);
+			}
+		}
+		
+		Bukkit.getServer().getPluginManager().callEvent(new NewDayEvent(newlyBankruptTowns, removedNations, totalTownUpkeep, totalNationUpkeep, start, peacefulTowns));
 
 		// Backups
 		TownyMessaging.sendDebugMsg("Cleaning up old backups.");
