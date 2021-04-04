@@ -11,6 +11,7 @@ import com.palmergames.bukkit.towny.event.PlayerChangePlotEvent;
 import com.palmergames.bukkit.towny.event.PlayerEnterTownEvent;
 import com.palmergames.bukkit.towny.event.PlayerLeaveTownEvent;
 import com.palmergames.bukkit.towny.event.executors.TownyActionEventExecutor;
+import com.palmergames.bukkit.towny.event.plot.PrePlayerKeepInventoryInArenaPlotEvent;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.Coord;
@@ -876,9 +877,16 @@ public class TownyPlayerListener implements Listener {
 				}
 			}
 
+			//Keep env in arena plot
 			if (TownySettings.getKeepInventoryInArenas() && !keepInventory && tb.getType() == TownBlockType.ARENA) {
-				event.setKeepInventory(true);
-				event.getDrops().clear();
+				PrePlayerKeepInventoryInArenaPlotEvent preEvent = new PrePlayerKeepInventoryInArenaPlotEvent();
+				BukkitTools.getPluginManager().callEvent(preEvent);
+				if (preEvent.isCancelled()) {
+					player.sendMessage(preEvent.getCancelMessage());
+				} else {
+					event.setKeepInventory(true);
+					event.getDrops().clear();
+				}
 			}
 		}
 	}
