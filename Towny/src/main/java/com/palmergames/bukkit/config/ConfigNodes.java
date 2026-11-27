@@ -125,7 +125,13 @@ public enum ConfigNodes {
 	TOWN_DEF_MAP_COLOR("town.default_map_color",
 			"",
 			"",
-			"# When set, all new Towns will have their map color set to this color. You must use a colour listed in the global_town_settings.allowed_map_colors setting below, ie aqua, azure, etc."),
+			"# The map fill color given to new Towns, as a 6 digit hex code in quotes, ie '00ffff'.",
+			"# An empty or invalid value will give a random color."),
+	TOWN_DEF_BORDER_MAP_COLOR("town.default_border_map_color",
+			"",
+			"",
+			"# The map border color given to new Towns, as a 6 digit hex code in quotes, ie '00ffff'.",
+			"# An empty or invalid value will give a random color."),
 	TOWN_DEF_TAXES(
 			"town.default_taxes", 
 			"",
@@ -200,7 +206,13 @@ public enum ConfigNodes {
 	NATION_DEF_MAP_COLOR("nation.default_map_color",
 			"",
 			"",
-			"# When set, all new Nations will have their map color set to this color. You must use a colour listed in the global_nation_settings.allowed_map_colors setting below, ie aqua, azure, etc."),
+			"# The map fill color given to new Nations, as a 6 digit hex code in quotes, ie '00ffff'.",
+			"# An empty or invalid value will give a random color."),
+	NATION_DEF_BORDER_MAP_COLOR("nation.default_border_map_color",
+			"",
+			"",
+			"# The map border color given to new Nations, as a 6 digit hex code in quotes, ie '00ffff'.",
+			"# An empty or invalid value will give a random color."),
 
 	NATION_DEF_TAG("nation.set_tag_automatically",
 			"false",
@@ -930,13 +942,6 @@ public enum ConfigNodes {
 			"",
 			"# When disabled, towns will not be able to be created with or renamed to a name that contains numbers.",
 			"# Disabling this option does not affect already created towns."),
-	GTOWN_SETTINGS_ALLOWED_TOWN_COLORS(
-			"global_town_settings.allowed_map_colors",
-			"aqua:00ffff, azure:f0ffff, beige:f5f5dc, black:000000, blue:0000ff, brown:a52a2a, cyan:00ffff, darkblue:00008b, darkcyan:008b8b, darkgrey:a9a9a9, darkgreen:006400, darkkhaki:bdb76b, darkmagenta:8b008b, darkolivegreen:556b2f, darkorange:ff8c00, darkorchid:9932cc, darkred:8b0000, darksalmon:e9967a, darkviolet:9400d3, fuchsia:ff00ff, gold:ffd700, green:008000, indigo:4b0082, khaki:f0e68c, lightblue:add8e6, lightcyan:e0ffff, lightgreen:90ee90, lightgrey:d3d3d3, lightpink:ffb6c1, lightyellow:ffffe0, lime:00ff00, magenta:ff00ff, maroon:800000, navy:000080, olive:808000, orange:ffa500, pink:ffc0cb, purple:800080, violet:800080, red:ff0000, silver:c0c0c0, white:ffffff, yellow:ffff00",
-			"",
-			"# This setting determines the list of allowed town map colors.",
-			"# The color codes are in hex format."
-	),
 	GTOWN_SETTINGS_UNKICKABLE_RANKS(
 			"global_town_settings.unkickable_ranks",
 			"assistant",
@@ -1048,12 +1053,6 @@ public enum ConfigNodes {
             "# If higher than 0, it will limit how many residents can join a nation.",
             "# Does not affect existing nations that are already over the limit."
             ),
-	GNATION_SETTINGS_ALLOWED_NATION_COLORS(
-			"global_nation_settings.allowed_map_colors",
-			"aqua:00ffff, azure:f0ffff, beige:f5f5dc, black:000000, blue:0000ff, brown:a52a2a, cyan:00ffff, darkblue:00008b, darkcyan:008b8b, darkgrey:a9a9a9, darkgreen:006400, darkkhaki:bdb76b, darkmagenta:8b008b, darkolivegreen:556b2f, darkorange:ff8c00, darkorchid:9932cc, darkred:8b0000, darksalmon:e9967a, darkviolet:9400d3, fuchsia:ff00ff, gold:ffd700, green:008000, indigo:4b0082, khaki:f0e68c, lightblue:add8e6, lightcyan:e0ffff, lightgreen:90ee90, lightgrey:d3d3d3, lightpink:ffb6c1, lightyellow:ffffe0, lime:00ff00, magenta:ff00ff, maroon:800000, navy:000080, olive:808000, orange:ffa500, pink:ffc0cb, purple:800080, violet:800080, red:ff0000, silver:c0c0c0, white:ffffff, yellow:ffff00",
-			"",
-			"# This setting determines the list of allowed nation map colors.",
-			"# The color codes are in hex format."),
 	GNATION_SETTINGS_MAX_ALLIES(
 			"global_nation_settings.max_allies",
 			"-1",

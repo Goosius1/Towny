@@ -44,6 +44,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -660,6 +661,7 @@ public class Nation extends Government {
 			nat_hm.put("registered", getRegistered());
 			nat_hm.put("nationBoard", getBoard());
 			nat_hm.put("mapColorHexCode", getMapColorHexCode());
+			nat_hm.put("mapBorderColorHexCode", getMapBorderColorHexCode());
 			nat_hm.put("manualNationLevel", getManualNationLevel());
 			nat_hm.put("nationSpawn", hasSpawn() ? parseLocationForSaving(getSpawn()) : "");
 			nat_hm.put("isPublic", isPublic());
@@ -726,7 +728,10 @@ public class Nation extends Government {
 			setPublic(getOrDefault(dataAsMap, "isPublic", false));
 			setOpen(getOrDefault(dataAsMap, "isOpen", TownySettings.getNationDefaultOpen()));
 			setBoard(dataAsMap.getOrDefault("nationBoard", TownySettings.getNationDefaultBoard()));
-			setMapColorHexCode(dataAsMap.getOrDefault("mapColorHexCode", MapUtil.generateRandomNationColourAsHexCode()));
+			line = dataAsMap.get("mapColorHexCode");
+			setMapColorHexCode(Objects.requireNonNullElseGet(MapUtil.parseHexColour(line), TownySettings::getDefaultNationMapColor));
+			line = dataAsMap.get("mapBorderColorHexCode");
+			setMapBorderColorHexCode(Objects.requireNonNullElseGet(MapUtil.parseHexColour(line), TownySettings::getDefaultNationMapBorderColor));
 			setActiveWar(getOrDefault(dataAsMap, "hasActiveWar", false));
 			setManualNationLevel(getOrDefault(dataAsMap, "manualNationLevel", -1));
 

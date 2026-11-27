@@ -273,6 +273,7 @@ public class SQLSchema {
 		columns.add(new ColumnData("registered", "BIGINT DEFAULT NULL"));
 		columns.add(new ColumnData("spawnCost", "float NOT NULL"));
 		columns.add(new ColumnData("mapColorHexCode", "mediumtext DEFAULT NULL"));
+		columns.add(new ColumnData("mapBorderColorHexCode", "mediumtext DEFAULT NULL"));
 		columns.add(new ColumnData("metadata", "mediumtext DEFAULT NULL"));
 		columns.add(new ColumnData("conqueredDays", "mediumint"));
 		columns.add(new ColumnData("conquered", "bool NOT NULL DEFAULT '0'"));
@@ -314,6 +315,7 @@ public class SQLSchema {
 		columns.add(new ColumnData("registered", "BIGINT DEFAULT NULL"));
 		columns.add(new ColumnData("nationBoard", "mediumtext DEFAULT NULL"));
 		columns.add(new ColumnData("mapColorHexCode", "mediumtext DEFAULT NULL"));
+		columns.add(new ColumnData("mapBorderColorHexCode", "mediumtext DEFAULT NULL"));
 		columns.add(new ColumnData("nationSpawn", "mediumtext DEFAULT NULL"));
 		columns.add(new ColumnData("isPublic", "bool NOT NULL DEFAULT '1'"));
 		columns.add(new ColumnData("isOpen", "bool NOT NULL DEFAULT '1'"));

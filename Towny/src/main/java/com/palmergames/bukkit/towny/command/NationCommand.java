@@ -157,6 +157,7 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 		"surname",
 		"tag",
 		"mapcolor",
+		"mapbordercolor",
 		"conqueredtax",
 		"taxpercentcap"
 	);
@@ -445,8 +446,9 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 						return NameUtil.filterByStart(Collections.singletonList("clear"), args[2]);
 					break;
 				case "mapcolor":
+				case "mapbordercolor":
 					if (args.length == 3)
-						return NameUtil.filterByStart(TownySettings.getNationColorsMap().keySet().stream().collect(Collectors.toList()), args[2]);
+						return NameUtil.filterByStart(Collections.singletonList("#"), args[2]);
 					break;
 				case "board":
 					if (args.length == 3)
@@ -1034,6 +1036,7 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 
 		nation.setRegistered(System.currentTimeMillis());
 		nation.setMapColorHexCode(TownySettings.getDefaultNationMapColor());
+		nation.setMapBorderColorHexCode(TownySettings.getDefaultNationMapBorderColor());
 		town.setNation(nation);
 		nation.setCapital(town);
 		nation.setSpawn(town.getSpawnOrNull());
@@ -2048,6 +2051,10 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_NATION_SET_MAPCOLOR.getNode());
 			nationSetMapColor(sender, nation, split, admin);
 			break;
+		case "mapbordercolor":
+			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_NATION_SET_MAPCOLOR.getNode());
+			nationSetMapBorderColor(sender, nation, split, admin);
+			break;
 		default:
 			// Test if this is an add-on command.
 			if (TownyCommandAddonAPI.hasCommand(CommandType.NATION_SET, split[0])) {
@@ -2063,30 +2070,52 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 
 	private static void nationSetMapColor(CommandSender sender, Nation nation, String[] split, boolean admin) throws TownyException {
 		if (split.length < 2)
-			throw new TownyException("Eg: /nation set mapcolor brown.");
+			throw new TownyException("Eg: /nation set mapcolor #ff8800");
 
-		String color = StringMgmt.join(StringMgmt.remFirstArg(split), " ").toLowerCase(Locale.ROOT);
-
-		if (!TownySettings.getNationColorsMap().containsKey(color))
-			throw new TownyException(Translatable.of("msg_err_invalid_nation_map_color", TownySettings.getNationColorsMap().keySet().toString()));
+		String hex = TownCommand.parseHexColourOrThrow(StringMgmt.remFirstArg(split));
 
 		double cost = TownySettings.getNationSetMapColourCost();
 		if (cost > 0)
 			Confirmation
-				.runOnAccept(() -> setNationMapColor(nation, color, admin, sender))
+				.runOnAccept(() -> setNationMapColor(nation, hex, admin, sender))
 				.setTitle(Translatable.of("msg_confirm_purchase", prettyMoney(cost)))
 				.setCost(new ConfirmationTransaction(() -> cost, nation, "Cost of setting nation map color."))
 				.sendTo(sender);
-		else 
-			setNationMapColor(nation, color, admin, sender);
+		else
+			setNationMapColor(nation, hex, admin, sender);
 	}
 
-	private static void setNationMapColor(Nation nation, String color, boolean admin, CommandSender sender) {
-		nation.setMapColorHexCode(TownySettings.getNationColorsMap().get(color));
+	private static void setNationMapColor(Nation nation, String hex, boolean admin, CommandSender sender) {
+		nation.setMapColorHexCode(hex);
 		nation.save();
-		TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_nation_map_color_changed", color));
+		TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_nation_map_color_changed", "#" + hex));
 		if (admin)
-			TownyMessaging.sendMsg(sender, Translatable.of("msg_nation_map_color_changed", color));
+			TownyMessaging.sendMsg(sender, Translatable.of("msg_nation_map_color_changed", "#" + hex));
+	}
+
+	private static void nationSetMapBorderColor(CommandSender sender, Nation nation, String[] split, boolean admin) throws TownyException {
+		if (split.length < 2)
+			throw new TownyException("Eg: /nation set mapbordercolor #ff8800");
+
+		String hex = TownCommand.parseHexColourOrThrow(StringMgmt.remFirstArg(split));
+
+		double cost = TownySettings.getNationSetMapColourCost();
+		if (cost > 0)
+			Confirmation
+				.runOnAccept(() -> setNationMapBorderColor(nation, hex, admin, sender))
+				.setTitle(Translatable.of("msg_confirm_purchase", prettyMoney(cost)))
+				.setCost(new ConfirmationTransaction(() -> cost, nation, "Cost of setting nation map border color."))
+				.sendTo(sender);
+		else
+			setNationMapBorderColor(nation, hex, admin, sender);
+	}
+
+	private static void setNationMapBorderColor(Nation nation, String hex, boolean admin, CommandSender sender) {
+		nation.setMapBorderColorHexCode(hex);
+		nation.save();
+		TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_nation_map_border_color_changed", "#" + hex));
+		if (admin)
+			TownyMessaging.sendMsg(sender, Translatable.of("msg_nation_map_border_color_changed", "#" + hex));
 	}
 
 	private static void nationSetBoard(CommandSender sender, Nation nation, String board) throws TownyException{

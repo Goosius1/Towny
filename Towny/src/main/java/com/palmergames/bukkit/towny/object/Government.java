@@ -50,6 +50,7 @@ public abstract class Government extends TownyObject implements BankEconomyHandl
 	private double spawnCost = TownySettings.getSpawnTravelCost();
 	protected double taxes;
 	protected String mapColorHexCode = "";
+	protected String mapBorderColorHexCode = "";
 	private final AccountAuditor accountAuditor = new GovernmentAccountAuditor();
 	private boolean hasActiveWar = false;
 	
@@ -351,6 +352,34 @@ public abstract class Government extends TownyObject implements BankEconomyHandl
 	
 	public void setMapColorHexCode(String mapColorHexCode) {
 		this.mapColorHexCode = mapColorHexCode;
+	}
+
+	/**
+	 * @return The map border colour as a hex code without a leading #, or an empty String if none is set.
+	 */
+	public String getMapBorderColorHexCode() {
+		return mapBorderColorHexCode;
+	}
+
+	/**
+	 * Gets the map border color of a government if it has one.
+	 *
+	 * @return The border {@link Color}, or null if none is set.
+	 */
+	@Nullable
+	public Color getMapBorderColor() {
+		String hex = getMapBorderColorHexCode();
+		if (hex == null || hex.isEmpty())
+			return null;
+		try {
+			return Color.decode("#" + hex);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+
+	public void setMapBorderColorHexCode(String mapBorderColorHexCode) {
+		this.mapBorderColorHexCode = mapBorderColorHexCode == null ? "" : mapBorderColorHexCode;
 	}
 
 	public abstract Collection<TownBlock> getTownBlocks();

@@ -101,6 +101,7 @@ import com.palmergames.bukkit.towny.utils.BorderUtil;
 import com.palmergames.bukkit.towny.utils.CombatUtil;
 import com.palmergames.bukkit.towny.utils.JailUtil;
 import com.palmergames.bukkit.towny.utils.MoneyUtil;
+import com.palmergames.bukkit.towny.utils.MapUtil;
 import com.palmergames.bukkit.towny.utils.NameUtil;
 import com.palmergames.bukkit.towny.utils.OutpostUtil;
 import com.palmergames.bukkit.towny.utils.ProximityUtil;
@@ -221,6 +222,7 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		"spawn",
 		"spawncost",
 		"mapcolor",
+		"mapbordercolor",
 		"name",
 		"outpost",
 		"perm",
@@ -619,8 +621,9 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 						return NameUtil.filterByStart(townSetBoardTabCompletes, args[2]);
 					break;
 				case "mapcolor":
+				case "mapbordercolor":
 					if (args.length == 3)
-						return NameUtil.filterByStart(new ArrayList<>(TownySettings.getTownColorsMap().keySet()), args[2]);
+						return NameUtil.filterByStart(Collections.singletonList("#"), args[2]);
 					break;
 				default:
 					return Collections.emptyList();
@@ -2142,6 +2145,7 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		case "perm" -> setTownBlockOwnerPermissions(sender, town, subArgs);
 		case "primaryjail" -> townSetPrimaryJail(sender, town);
 		case "mapcolor" -> townSetMapColor(sender, subArgs, town);
+		case "mapbordercolor" -> townSetMapBorderColor(sender, subArgs, town);
 		default -> {
 			if (TownyCommandAddonAPI.hasCommand(CommandType.TOWN_SET, arg)) {
 				TownyCommandAddonAPI.getAddonCommand(CommandType.TOWN_SET, arg).execute(sender, "town", split);
@@ -2567,27 +2571,61 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 	public static void townSetMapColor(CommandSender sender, String[] split, Town town) throws TownyException {
 		checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWN_SET_MAPCOLOR.getNode());
 		if (split.length == 0)
-			throw new TownyException("Eg: /town set mapcolor brown.");
+			throw new TownyException("Eg: /town set mapcolor #ff8800");
 
-		String color = StringMgmt.join(split, " ").toLowerCase(Locale.ROOT);
-
-		if (!TownySettings.getTownColorsMap().containsKey(color))
-			throw new TownyException(Translatable.of("msg_err_invalid_nation_map_color", TownySettings.getTownColorsMap().keySet().toString()));
+		String hex = parseHexColourOrThrow(split);
 
 		if (TownySettings.getTownSetMapColourCost() > 0)
 			Confirmation
-				.runOnAccept(()-> setTownMapColor(town, color))
+				.runOnAccept(()-> setTownMapColor(town, hex))
 				.setTitle(Translatable.of("msg_confirm_purchase", prettyMoney(TownySettings.getTownSetMapColourCost())))
 				.setCost(new ConfirmationTransaction(TownySettings::getTownSetMapColourCost, town, "Cost of setting town map color."))
 				.sendTo(sender);
-		else 
-			setTownMapColor(town, color);
+		else
+			setTownMapColor(town, hex);
 	}
 
-	private static void setTownMapColor(Town town, String color) {
-		town.setMapColorHexCode(TownySettings.getTownColorsMap().get(color));
+	private static void setTownMapColor(Town town, String hex) {
+		town.setMapColorHexCode(hex);
 		town.save();
-		TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_town_map_color_changed", color));
+		TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_town_map_color_changed", "#" + hex));
+	}
+
+	public static void townSetMapBorderColor(CommandSender sender, String[] split, Town town) throws TownyException {
+		checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWN_SET_MAPCOLOR.getNode());
+		if (split.length == 0)
+			throw new TownyException("Eg: /town set mapbordercolor #ff8800");
+
+		String hex = parseHexColourOrThrow(split);
+
+		if (TownySettings.getTownSetMapColourCost() > 0)
+			Confirmation
+				.runOnAccept(()-> setTownMapBorderColor(town, hex))
+				.setTitle(Translatable.of("msg_confirm_purchase", prettyMoney(TownySettings.getTownSetMapColourCost())))
+				.setCost(new ConfirmationTransaction(TownySettings::getTownSetMapColourCost, town, "Cost of setting town map border color."))
+				.sendTo(sender);
+		else
+			setTownMapBorderColor(town, hex);
+	}
+
+	private static void setTownMapBorderColor(Town town, String hex) {
+		town.setMapBorderColorHexCode(hex);
+		town.save();
+		TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_town_map_border_color_changed", "#" + hex));
+	}
+
+	/**
+	 * Parses a player-entered hex colour from command args.
+	 *
+	 * @return the hex code, lowercase and without a leading #.
+	 * @throws TownyException if the input is not a valid hex colour.
+	 */
+	static String parseHexColourOrThrow(String[] args) throws TownyException {
+		String input = StringMgmt.join(args, "");
+		String hex = MapUtil.parseHexColour(input);
+		if (hex == null)
+			throw new TownyException(Translatable.of("msg_err_invalid_map_color_hex", input));
+		return hex;
 	}
 
 	public static void townSetTaxPercent(CommandSender sender, String[] split, Town town) throws TownyException {
@@ -2873,6 +2911,7 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 
 		town.setRegistered(System.currentTimeMillis());
 		town.setMapColorHexCode(TownySettings.getDefaultTownMapColor());
+		town.setMapBorderColorHexCode(TownySettings.getDefaultTownMapBorderColor());
 		resident.setTown(town);
 		town.setMayor(resident, false);
 		town.setFounder(resident.getName());

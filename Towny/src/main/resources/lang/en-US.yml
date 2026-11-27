@@ -137,6 +137,8 @@ town_set_help_8: "Set your town's name."
 town_set_help_9: "Set your town's tag."
 town_set_help_10: "Set the title or surname of your resident."
 town_set_help_11: "Set the max amount of money a percentage tax can take from a resident."
+town_set_help_12: "Set the mapcolor used in Mapping plugins."
+town_set_help_13: "Set the map border color used in Mapping plugins."
 
 town_jail_help_0: "List the town's jails."
 town_jail_help_1: "Jail a resident in the primary jail."
@@ -207,6 +209,7 @@ nation_set_help_7: "Set the nation board message."
 nation_set_help_8: "Set the nation spawn point."
 nation_set_help_9: "Set the cost to use /n spawn."
 nation_set_help_10: "Set the mapcolor used in Mapping plugins."
+nation_set_help_11: "Set the map border color used in Mapping plugins."
 
 nation_toggle_help_0: "Toggles peaceful status of the nation."
 nation_toggle_help_1: "Toggles public status, allowing non-residents to use /n spawn."
@@ -1364,8 +1367,9 @@ msg_cache_block_error_plot_friends: 'friends'
 msg_cache_block_error_plot_allies: 'allies'
 msg_cache_block_error_plot_outsiders: 'outsiders'
 msg_cache_block_error_plot_town_members: 'town members'
-msg_err_invalid_nation_map_color: '<red>Unknown map color. Allowed colors are %s.'
 msg_nation_map_color_changed: '<aqua>The nation map color was changed to %s.'
+msg_nation_map_border_color_changed: '<aqua>The nation map border color was changed to %s.'
+msg_err_invalid_map_color_hex: '<red>"%s" is not a valid hex color. Use a 6 digit hex code, eg. #ff8800.'
 msg_err_unable_to_add_more_residents_without_nation: 'Your town cannot invite more than %s residents without first joining or creating a nation.'
 msg_the_following_towns_were_deleted_for_having_0_claims: 'The following towns were deleted for having 0 claims: %s'
 msg_spawn_warn: 'Spawning costs %s. Continue? Hint: add -ignore to skip these confirmations.'
@@ -1763,6 +1767,7 @@ msg_err_must_be_less_than_or_equal_to: 'Amount must be less than or equal to %s'
 err_invalid_yaml: 'Loading error: Failed to load file %s (does it pass a yaml parser?).'
 
 msg_town_map_color_changed: '<aqua>The town map color was changed to %s.'
+msg_town_map_border_color_changed: '<aqua>The town map border color was changed to %s.'
 
 msg_err_this_townblock_doesnt_match_the_groups_type: 'This townblock cannot be added to the group because it is not of type: %s'
 

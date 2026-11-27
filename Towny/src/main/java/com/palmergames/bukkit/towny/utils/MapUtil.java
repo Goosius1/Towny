@@ -1,30 +1,36 @@
 package com.palmergames.bukkit.towny.utils;
 
-import com.palmergames.bukkit.towny.TownySettings;
-import java.util.ArrayList;
-import java.util.List;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Locale;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Pattern;
 
 public class MapUtil {
 
+	private static final Pattern HEX_COLOUR_PATTERN = Pattern.compile("^[0-9a-f]{6}$");
+
 	/**
-	 * Choose a random colour for a nation from the allowed list
+	 * Parse a player-entered hex colour, eg. "#FF8800" or "ff8800".
 	 *
-	 * @return color in hex code format
+	 * @param input the raw input
+	 * @return the colour as a 6 character lowercase hex code without a leading #,
+	 *         or null if the input is not a valid hex colour.
 	 */
-	public static String generateRandomNationColourAsHexCode() {
-		List<String> allowedColourCodes = new ArrayList<>(TownySettings.getNationColorsMap().values());
-		int randomIndex = (int)(Math.random() * allowedColourCodes.size());
-		return allowedColourCodes.get(randomIndex);
+	@Nullable
+	public static String parseHexColour(String input) {
+		if (input == null)
+			return null;
+		String hex = input.trim().toLowerCase(Locale.ROOT);
+		if (hex.startsWith("#"))
+			hex = hex.substring(1);
+		return HEX_COLOUR_PATTERN.matcher(hex).matches() ? hex : null;
 	}
-	
+
 	/**
-	 * Choose a random colour for a town from the allowed list
-	 *
-	 * @return color in hex code format
+	 * @return a random colour as a 6 character lowercase hex code without a leading #.
 	 */
-	public static String generateRandomTownColourAsHexCode() {
-		List<String> allowedColourCodes = new ArrayList<>(TownySettings.getTownColorsMap().values());
-		int randomIndex = (int)(Math.random() * allowedColourCodes.size());
-		return allowedColourCodes.get(randomIndex);
+	public static String generateRandomColourAsHexCode() {
+		return String.format("%06x", ThreadLocalRandom.current().nextInt(0x1000000));
 	}
 }

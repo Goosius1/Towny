@@ -71,6 +71,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -1662,10 +1663,24 @@ public class Town extends Government implements TownBlockOwner {
 	@Override
 	@Nullable
 	public String getMapColorHexCode() {
-		String rawMapColorHexCode = super.getMapColorHexCode();
-		TownMapColourLocalCalculationEvent event = new TownMapColourLocalCalculationEvent(this, rawMapColorHexCode);
+		return callLocalMapColourEvent().getMapColorHexCode();
+	}
+
+	/**
+	 * Used to get the town's *local* map border colour.
+	 *
+	 * @return String value of hex code or null.
+	 */
+	@Override
+	@Nullable
+	public String getMapBorderColorHexCode() {
+		return callLocalMapColourEvent().getMapBorderColorHexCode();
+	}
+
+	private TownMapColourLocalCalculationEvent callLocalMapColourEvent() {
+		TownMapColourLocalCalculationEvent event = new TownMapColourLocalCalculationEvent(this, super.getMapColorHexCode(), super.getMapBorderColorHexCode());
 		BukkitTools.fireEvent(event);
-		return event.getMapColorHexCode();
+		return event;
 	}
 
 	/**
@@ -1675,10 +1690,25 @@ public class Town extends Government implements TownBlockOwner {
 	 */
 	@Nullable
 	public String getNationMapColorHexCode() {
+		return callNationalMapColourEvent().getMapColorHexCode();
+	}
+
+	/**
+	 * Used to get the town's *national* map border colour.
+	 *
+	 * @return String value of hex code or null.
+	 */
+	@Nullable
+	public String getNationMapBorderColorHexCode() {
+		return callNationalMapColourEvent().getMapBorderColorHexCode();
+	}
+
+	private TownMapColourNationalCalculationEvent callNationalMapColourEvent() {
 		String rawMapColorHexCode = hasNation() ? nation.getMapColorHexCode() : null;
-		TownMapColourNationalCalculationEvent event = new TownMapColourNationalCalculationEvent(this, rawMapColorHexCode);
+		String rawMapBorderColorHexCode = hasNation() ? nation.getMapBorderColorHexCode() : null;
+		TownMapColourNationalCalculationEvent event = new TownMapColourNationalCalculationEvent(this, rawMapColorHexCode, rawMapBorderColorHexCode);
 		BukkitTools.fireEvent(event);
-		return event.getMapColorHexCode();
+		return event;
 	}
 
 	@Override
@@ -1731,7 +1761,8 @@ public class Town extends Government implements TownBlockOwner {
 			twn_hm.put("outlaws", StringMgmt.join(getOutlaws(), ","));
 			twn_hm.put("registered", getRegistered());
 			twn_hm.put("spawnCost", getSpawnCost());
-			twn_hm.put("mapColorHexCode", getMapColorHexCode());
+			twn_hm.put("mapColorHexCode", super.getMapColorHexCode());
+			twn_hm.put("mapBorderColorHexCode", super.getMapBorderColorHexCode());
 			twn_hm.put("conqueredDays", getConqueredDays());
 			twn_hm.put("conquered", isConquered());
 			twn_hm.put("ruined", isRuined());
@@ -1846,7 +1877,10 @@ public class Town extends Government implements TownBlockOwner {
 				loadOutlaws(parseResidentsFromDB(line));
 			setRegistered(getOrDefault(dataAsMap, "registered", 0l));
 			setSpawnCost(getOrDefault(dataAsMap, "spawnCost", TownySettings.getSpawnTravelCost()));
-			setMapColorHexCode(dataAsMap.getOrDefault("mapColorHexCode", MapUtil.generateRandomTownColourAsHexCode()));
+			line = dataAsMap.get("mapColorHexCode");
+			setMapColorHexCode(Objects.requireNonNullElseGet(MapUtil.parseHexColour(line), TownySettings::getDefaultTownMapColor));
+			line = dataAsMap.get("mapBorderColorHexCode");
+			setMapBorderColorHexCode(Objects.requireNonNullElseGet(MapUtil.parseHexColour(line), TownySettings::getDefaultTownMapBorderColor));
 			setConqueredDays(getOrDefault(dataAsMap, "conqueredDays", 0));
 			setConquered(getOrDefault(dataAsMap, "conquered", false));
 			setRuined(getOrDefault(dataAsMap, "ruined", false));

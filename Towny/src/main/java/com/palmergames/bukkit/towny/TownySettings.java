@@ -3706,40 +3706,25 @@ public class TownySettings {
 		return getBoolean(ConfigNodes.NOTIFICATION_TOWN_NAMES_ARE_VERBOSE);
 	}
 
-	public static Map<String,String> getNationColorsMap() {
-		List<String> nationColorsList = getStrArr(ConfigNodes.GNATION_SETTINGS_ALLOWED_NATION_COLORS);
-		Map<String,String> nationColorsMap = new HashMap<>();
-		String[] keyValuePair;
-		for(String nationColor: nationColorsList) {
-			keyValuePair = nationColor.trim().split(":");
-			nationColorsMap.put(keyValuePair[0], keyValuePair[1]);
-		}
-		return nationColorsMap;
-	}
-	
-	public static Map<String,String> getTownColorsMap() {
-		List<String> townColorsList = getStrArr(ConfigNodes.GTOWN_SETTINGS_ALLOWED_TOWN_COLORS);
-		Map<String,String> townColorsMap = new HashMap<>();
-		String[] keyValuePair;
-		for(String nationColor: townColorsList) {
-			keyValuePair = nationColor.trim().split(":");
-			townColorsMap.put(keyValuePair[0], keyValuePair[1]);
-		}
-		return townColorsMap;
-	}
-
 	public static String getDefaultNationMapColor() {
-		String colorName = getString(ConfigNodes.NATION_DEF_MAP_COLOR);
-		if (colorName.isEmpty() || !getNationColorsMap().containsKey(colorName))
-			return MapUtil.generateRandomNationColourAsHexCode();
-		return getNationColorsMap().get(colorName);
+		return getHexColourOrRandom(ConfigNodes.NATION_DEF_MAP_COLOR);
 	}
 
 	public static String getDefaultTownMapColor() {
-		String colorName = getString(ConfigNodes.TOWN_DEF_MAP_COLOR);
-		if (colorName.isEmpty() || !getTownColorsMap().containsKey(colorName))
-			return MapUtil.generateRandomTownColourAsHexCode();
-		return getTownColorsMap().get(colorName);
+		return getHexColourOrRandom(ConfigNodes.TOWN_DEF_MAP_COLOR);
+	}
+
+	public static String getDefaultNationMapBorderColor() {
+		return getHexColourOrRandom(ConfigNodes.NATION_DEF_BORDER_MAP_COLOR);
+	}
+
+	public static String getDefaultTownMapBorderColor() {
+		return getHexColourOrRandom(ConfigNodes.TOWN_DEF_BORDER_MAP_COLOR);
+	}
+
+	private static String getHexColourOrRandom(ConfigNodes node) {
+		String hex = MapUtil.parseHexColour(getString(node));
+		return hex != null ? hex : MapUtil.generateRandomColourAsHexCode();
 	}
 
 	public static boolean isTownBankruptcyEnabled() {

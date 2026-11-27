@@ -11148,3 +11148,34 @@ c
   - Improve /n join, send new town mayors a list of nations to join, courtesy of Veyronity with PR #8341.
   - Fix backwards compatibility for cushion check, courtesy of Warriorrr with PR #8347.
   - Bump org.apache.maven.plugins:maven-surefire-plugin from 3.6.0 to 3.6.1.
+0.103.2.17:
+  - Add separate map border colours for towns and nations, and allow any hex colour for map colours.
+    - Map colours are now set using 6 digit hex codes, with or without a leading #, instead of colour names.
+    - Invalid or missing map colours loaded from the database are replaced with the configured default, or a random colour.
+    - Both flatfile and SQL data stores gain a mapBorderColorHexCode entry for towns and nations.
+    - Add /t set mapcolor and /t set mapbordercolor to the /t set help menu.
+    - New Commands:
+      - /t set mapbordercolor [#hex]
+        - Uses the same permission node and cost as /t set mapcolor.
+      - /n set mapbordercolor [#hex]
+        - Uses the same permission node and cost as /n set mapcolor.
+    - New Config Options:
+      - town.default_border_map_color
+        - Default: ""
+        - The map border colour given to new towns. An empty or invalid value gives a random colour.
+      - nation.default_border_map_color
+        - Default: ""
+        - The map border colour given to new nations. An empty or invalid value gives a random colour.
+    - Changed Config Options:
+      - town.default_map_color and nation.default_map_color now take a hex code instead of a colour name.
+    - Removed Config Options:
+      - global_town_settings.allowed_map_colors
+      - global_nation_settings.allowed_map_colors
+    - API: Add getMapBorderColorHexCode(), getMapBorderColor() and setMapBorderColorHexCode() to Government.
+    - API: Add MapUtil.parseHexColour().
+    - API: Replace MapUtil.generateRandomTownColourAsHexCode() and generateRandomNationColourAsHexCode() with generateRandomColourAsHexCode().
+    - API: Remove TownySettings.getTownColorsMap() and getNationColorsMap().
+    - API: TownMapColourLocalCalculationEvent and TownMapColourNationalCalculationEvent now carry the map border colour as well as the fill colour.
+    - API: Town.getMapBorderColorHexCode() now fires TownMapColourLocalCalculationEvent.
+    - API: Add Town.getNationMapBorderColorHexCode(), which fires TownMapColourNationalCalculationEvent.
+    - Fix a bug where a temporary colour change made by a plugin, using TownMapColourLocalCalculationEvent, could be permanently saved to the town.

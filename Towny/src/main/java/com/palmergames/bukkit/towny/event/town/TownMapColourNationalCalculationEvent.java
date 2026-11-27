@@ -14,11 +14,17 @@ public class TownMapColourNationalCalculationEvent extends Event {
 
 	private final Town town;
 	private String mapColorHexCode;
+	private String mapBorderColorHexCode;
 
 	public TownMapColourNationalCalculationEvent(Town town, String mapColorHexCode) {
 		super(!Bukkit.getServer().isPrimaryThread());
 		this.town = town;
 		this.mapColorHexCode = mapColorHexCode;
+	}
+
+	public TownMapColourNationalCalculationEvent(Town town, String mapColorHexCode, String mapBorderColorHexCode) {
+		this(town, mapColorHexCode);
+		this.mapBorderColorHexCode = mapBorderColorHexCode;
 	}
 
 	public Town getTown() {
@@ -32,6 +38,15 @@ public class TownMapColourNationalCalculationEvent extends Event {
 
 	public void setMapColorHexCode(String mapColorHexCode) {
 		this.mapColorHexCode = mapColorHexCode;
+	}
+
+	@Nullable
+	public String getMapBorderColorHexCode() {
+		return mapBorderColorHexCode;
+	}
+
+	public void setMapBorderColorHexCode(String mapBorderColorHexCode) {
+		this.mapBorderColorHexCode = mapBorderColorHexCode;
 	}
 
 	public static HandlerList getHandlerList() {

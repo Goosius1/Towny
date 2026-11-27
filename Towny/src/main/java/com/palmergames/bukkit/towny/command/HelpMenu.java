@@ -639,10 +639,12 @@ public enum HelpMenu {
 				.add("name [name]", Translatable.of("town_set_help_8"))
 				.add("tag [upto 4 letters] or clear", Translatable.of("town_set_help_9"))
 				.add("title/surname [resident] [text]", Translatable.of("town_set_help_10"))
-				.add("taxpercentcap [amount]", Translatable.of("town_set_help_11"));
+				.add("taxpercentcap [amount]", Translatable.of("town_set_help_11"))
+				.add("mapcolor [#hex]", Translatable.of("town_set_help_12"))
+				.add("mapbordercolor [#hex]", Translatable.of("town_set_help_13"));
 		}
 	},
-	
+
 	TOWN_TOGGLE_HELP {
 		@Override
 		protected MenuBuilder load() {
@@ -1044,7 +1046,8 @@ public enum HelpMenu {
 				.add("board [message ... ]", Translatable.of("nation_set_help_7"))
 				.add("spawn", Translatable.of("nation_set_help_8"))
 				.add("spawncost [$]", Translatable.of("nation_set_help_9"))
-				.add("mapcolor [color]", Translatable.of("nation_set_help_10"));
+				.add("mapcolor [#hex]", Translatable.of("nation_set_help_10"))
+				.add("mapbordercolor [#hex]", Translatable.of("nation_set_help_11"));
 		}
 	},
 
